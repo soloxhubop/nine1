@@ -1563,14 +1563,3 @@ UserInputService.JumpRequest:Connect(function()
 end)
 
 print("Chilli-Style Bypass Loaded | 2026 Patch Fix")
-
-
--- Forza la posizione dei bottoni all'avvio (senza usare file)
-task.spawn(function()
-    task.wait(2) -- Aspetta che la GUI si carichi
-    if buttons["Float"] then buttons["Float"].Position = UDim2.new(0.7, 0, 0.3, 0) end
-    if buttons["Auto Left"] then buttons["Auto Left"].Position = UDim2.new(0.7, 0, 0.36, 0) end
-    if buttons["Auto Right"] then buttons["Auto Right"].Position = UDim2.new(0.82, 0, 0.36, 0) end
-    if buttons["Bat Aimbot"] then buttons["Bat Aimbot"].Position = UDim2.new(0.82, 0, 0.3, 0) end
-    print("Posizioni bottoni impostate.")
-end)
