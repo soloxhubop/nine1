@@ -1,52 +1,34 @@
 -- ========================================================
--- MELOSKA HUB - AUTO-OBSERVER & SAVE (ALL-IN-ONE)
+-- SISTEMA SALVATAGGIO MELOSKA (VERIFICA)
 -- ========================================================
 local HttpService = game:GetService("HttpService")
-local CoreGui = game:GetService("CoreGui")
-
 local CONFIG_FILE = "Meloska_AutoSave.json"
 local SavedData = {Positions = {}, Toggles = {}}
 
--- Caricamento
-if isfile(CONFIG_FILE) then
-    local success, data = pcall(function() return HttpService:JSONDecode(readfile(CONFIG_FILE)) end)
-    if success then SavedData = data end
-end
-
+-- Funzione sicura per salvare
 local function SaveEverything()
-    writefile(CONFIG_FILE, HttpService:JSONEncode(SavedData))
-end
-
--- Questa funzione "osserva" i tuoi elementi
-function SetupAutoSave(uiElement)
-    -- Se è trascinabile, salva posizione
-    if uiElement:IsA("GuiObject") then
-        uiElement:GetPropertyChangedSignal("Position"):Connect(function()
-            SavedData.Positions[uiElement.Name] = uiElement.Position
-            SaveEverything()
+    if writefile then
+        local success, err = pcall(function()
+            writefile(CONFIG_FILE, HttpService:JSONEncode(SavedData))
         end)
-    end
-    
-    -- Se è un toggle, salva stato (supponendo che abbiano una proprietà .Visible o .Active)
-    if uiElement:IsA("TextButton") then
-        uiElement.MouseButton1Click:Connect(function()
-            -- Qui stiamo salvando l'ultimo stato cliccato
-            SavedData.Toggles[uiElement.Name] = not SavedData.Toggles[uiElement.Name]
-            SaveEverything()
-        end)
-    end
-end
-
--- FUNZIONE DI CARICAMENTO AUTOMATICO
--- Richiamala alla fine del tuo boot()
-function ApplySavedData(parentGui)
-    for _, obj in pairs(parentGui:GetDescendants()) do
-        if SavedData.Positions[obj.Name] then
-            obj.Position = SavedData.Positions[obj.Name]
+        if not success then
+            warn("Salvataggio bloccato dal sistema: " .. tostring(err))
         end
+    else
+        warn("Il tuo executor non supporta il salvataggio file (writefile mancante).")
+    end
+end
+
+-- Caricamento iniziale
+if isfile and isfile(CONFIG_FILE) then
+    local success, data = pcall(function() return HttpService:JSONDecode(readfile(CONFIG_FILE)) end)
+    if success then 
+        SavedData = data 
+        print("Dati caricati correttamente.")
     end
 end
 -- ========================================================
+
 
 -- leaked by https://discord.gg/WfTDsBPR9n join for more sources cheap
 
