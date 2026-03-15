@@ -1490,76 +1490,18 @@ end
 
 task.spawn(startStats)
 
--- // THE "CHILLI" BYPASS
--- This spoofing loop resets the game's internal "Anti-Fly" timer
-task.spawn(function()
-    while true do
-        task.wait(1.8) -- Frequency of the state reset
-        if _G.InfJump then
-            local char = LocalPlayer.Character
-            local hum = char and char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                -- Bypass: Briefly set state to Landed to reset the kill-timer
-                hum:ChangeState(Enum.HumanoidStateType.Landed)
-                -- Spoofing a raycast check (some anti-cheats look for this)
-                hum.PlatformStand = false
-            end
-        end
-    end
+RunService.Heartbeat:Connect(function()
+    if not HYDRA.INFINITE_JUMP_H then return end
+    local char = player.Character; if not char then return end
+    local hrp  = char:FindFirstChild("HumanoidRootPart"); if not hrp then return end
+    local vel  = hrp.AssemblyLinearVelocity
+    if vel.Y < -35 then hrp.AssemblyLinearVelocity = Vector3.new(vel.X, -35, vel.Z) end
 end)
 
--- // SMOOTH JUMP EXECUTION
--- // INFINITE JUMP ORIGINALE MODIFICATO - MELOSKA HUB
-local UserInputService = game:GetService("UserInputService")
-local canJump = true
-local cooldownTime = 0.2
-
--- CONFIGURAZIONE POTENZA
-local POWER_LEVEL = 52 -- Originale era 45. 52 è un po' più alto ma sicuro.
-
-local function ExecuteJump()
-    local char = game.Players.LocalPlayer.Character
-    local hrp = char and char:FindFirstChild("HumanoidRootPart")
-    local hum = char and char:FindFirstChildOfClass("Humanoid")
-
-    -- Controlliamo che InfJump sia attivo e che il cooldown sia passato
-    if hrp and hum and _G.InfJump and canJump then
-        canJump = false
-        
-        -- Reset rotazione per stabilità (dal tuo codice originale)
-        hrp.AssemblyAngularVelocity = Vector3.new(0, hrp.AssemblyAngularVelocity.Y, 0)
-
-        -- Applichiamo la spinta verso l'alto
-        hrp.AssemblyLinearVelocity = Vector3.new(
-            hrp.AssemblyLinearVelocity.X, 
-            POWER_LEVEL, 
-            hrp.AssemblyLinearVelocity.Z
-        )
-
-        task.wait(cooldownTime)
-        canJump = true
-    end
-end
-
--- Collegamento all'input del salto
-UserInputService.JumpRequest:Connect(ExecuteJump)
-
-UserInputService.InputBegan:Connect(function(input, processed)
-    if not processed and input.KeyCode == Enum.KeyCode.Space then
-        ExecuteJump()
-    end
-end)
-
--- InputBegan è più sicuro di JumpRequest per evitare il "kick" per spam
-UserInputService.InputBegan:Connect(function(input, processed)
-    if not processed and input.KeyCode == Enum.KeyCode.Space then
-        ExecuteJump()
-    end
-end)
--- // BINDING
 UserInputService.JumpRequest:Connect(function()
-    task.wait(0.03) -- Mimics human input latency
-    pcall(ExecuteJump)
+    if not HYDRA.INFINITE_JUMP_H then return end
+    local char = player.Character; if not char then return end
+    local hrp  = char:FindFirstChild("HumanoidRootPart"); if not hrp then return end
+    local vel  = hrp.AssemblyLinearVelocity
+    hrp.AssemblyLinearVelocity = Vector3.new(vel.X, 55, vel.Z)
 end)
-
-print("Chilli-Style Bypass Loaded | 2026 Patch Fix")
