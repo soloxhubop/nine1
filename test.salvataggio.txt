@@ -1,0 +1,3 @@
+writefile("debug_test.txt", "Il salvataggio funziona")
+print("Test completato")
+
