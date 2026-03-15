@@ -1408,52 +1408,52 @@ Lib.Destroying:Connect(function()
 end)
 
 -- ================================================
--- MELOSKA HUB - ADAPTIVE FPS & DEVICE MONITOR
+-- MELOSKA HUB - ADAPTIVE FPS, PING & DEVICE MONITOR
 -- ================================================
 
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local Stats = game:GetService("Stats")
 local CoreGui = game:GetService("CoreGui")
 
--- Creazione della UI (Ancorata e adattiva)
+-- Creazione della UI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "Meloska_Adaptive_Hub"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = CoreGui:FindFirstChild("RobloxGui") or CoreGui
 
--- Frame Principale (Nero scuro, bordo viola, più lungo)
+-- Frame Principale
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15) -- Nero scuro
-MainFrame.BackgroundTransparency = 0.3 -- Leggera trasparenza
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BackgroundTransparency = 0.3
 MainFrame.BorderSizePixel = 0
--- Posizionamento centrato in basso (si adatta ad ogni risoluzione)
-MainFrame.Position = UDim2.new(0.5, -145, 1, -65) 
-MainFrame.Size = UDim2.new(0, 290, 0, 40) -- Lunghezza estesa
+
+-- POSIZIONE MODIFICATA: alzato a -110 invece di -65 per stare più in alto
+MainFrame.Position = UDim2.new(0.5, -150, 1, -110) 
+MainFrame.Size = UDim2.new(0, 300, 0, 40) 
 
 local UICorner = Instance.new("UICorner", MainFrame)
 UICorner.CornerRadius = UDim.new(0, 8)
 
--- Bordo Viola (Stroke)
 local UIStroke = Instance.new("UIStroke", MainFrame)
-UIStroke.Color = Color3.fromRGB(138, 43, 226) -- Viola Meloska
+UIStroke.Color = Color3.fromRGB(138, 43, 226) -- Viola
 UIStroke.Thickness = 2.5
-UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
--- Testo del Meloska Hub
 local InfoLabel = Instance.new("TextLabel")
 InfoLabel.Parent = MainFrame
 InfoLabel.Size = UDim2.new(1, 0, 1, 0)
 InfoLabel.BackgroundTransparency = 1
 InfoLabel.Font = Enum.Font.GothamBold
 InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-InfoLabel.TextSize = 14
-InfoLabel.Text = "Meloska Hub | Calcolo dati..."
+InfoLabel.TextSize = 13
+InfoLabel.Text = "Meloska Hub | Inizializzazione..."
 
 -- ================================================
--- RILEVAMENTO AUTOMATICO DISPOSITIVO
+-- LOGICA FUNZIONALE
 -- ================================================
+
 local function getPlatform()
     if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled then
         return "Mobile"
@@ -1466,9 +1466,6 @@ end
 
 local platformName = getPlatform()
 
--- ================================================
--- CONTATORE FPS
--- ================================================
 local function startStats()
     local lastTime = tick()
     local frames = 0
@@ -1478,8 +1475,11 @@ local function startStats()
         local now = tick()
         if now - lastTime >= 1 then
             local fps = frames
-            -- Aggiornamento dinamico
-            InfoLabel.Text = string.format("Meloska Hub  |  %d FPS  |  Device: %s", fps, platformName)
+            -- Calcolo Ping
+            local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+            
+            InfoLabel.Text = string.format("Meloska Hub  |  %d FPS  |  %dms  |  %s", fps, ping, platformName)
+            
             frames = 0
             lastTime = now
         end
