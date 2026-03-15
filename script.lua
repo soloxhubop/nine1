@@ -1408,7 +1408,7 @@ Lib.Destroying:Connect(function()
 end)
 
 -- ================================================
--- MELOSKA HUB - ADAPTIVE FPS, PING & DEVICE MONITOR
+-- MELOSKA HUB - FPS, PING & DEVICE MONITOR (FIXED)
 -- ================================================
 
 local RunService = game:GetService("RunService")
@@ -1429,10 +1429,9 @@ MainFrame.Parent = ScreenGui
 MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 MainFrame.BackgroundTransparency = 0.3
 MainFrame.BorderSizePixel = 0
-
--- POSIZIONE MODIFICATA: alzato a -110 invece di -65 per stare più in alto
-MainFrame.Position = UDim2.new(0.5, -150, 1, -110) 
-MainFrame.Size = UDim2.new(0, 300, 0, 40) 
+-- Posizione: Centrato in basso, sollevato per non coprire i tasti
+MainFrame.Position = UDim2.new(0.5, -150, 1, -100) 
+MainFrame.Size = UDim2.new(0, 300, 0, 40)
 
 local UICorner = Instance.new("UICorner", MainFrame)
 UICorner.CornerRadius = UDim.new(0, 8)
@@ -1448,10 +1447,10 @@ InfoLabel.BackgroundTransparency = 1
 InfoLabel.Font = Enum.Font.GothamBold
 InfoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 InfoLabel.TextSize = 13
-InfoLabel.Text = "Meloska Hub | Inizializzazione..."
+InfoLabel.Text = "Meloska Hub | Caricamento..."
 
 -- ================================================
--- LOGICA FUNZIONALE
+-- LOGICA DI RILEVAMENTO
 -- ================================================
 
 local function getPlatform()
@@ -1465,7 +1464,9 @@ local function getPlatform()
 end
 
 local platformName = getPlatform()
+local NetworkStats = Stats:WaitForChild("Network"):WaitForChild("ServerStatsItem")
 
+-- Loop aggiornamento
 local function startStats()
     local lastTime = tick()
     local frames = 0
@@ -1475,10 +1476,11 @@ local function startStats()
         local now = tick()
         if now - lastTime >= 1 then
             local fps = frames
-            -- Calcolo Ping
-            local ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+            -- Lettura corretta del ping
+            local ping = math.floor(NetworkStats["Data Ping"]:GetValue())
             
-            InfoLabel.Text = string.format("Meloska Hub  |  %d FPS  |  %dms  |  %s", fps, ping, platformName)
+            -- Aggiornamento TESTO (Ora include esplicitamente FPS e PING)
+            InfoLabel.Text = "Meloska Hub  |  FPS: " .. fps .. "  |  Ping: " .. ping .. "ms  |  " .. platformName
             
             frames = 0
             lastTime = now
