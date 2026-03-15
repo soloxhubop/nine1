@@ -798,7 +798,7 @@ end
 local TText = Instance.new("TextLabel", Title)
 TText.Size = UDim2.new(1, 0, 1, 0)
 TText.BackgroundTransparency = 1
-TText.Text = "Nine Hub Duels"
+TText.Text = "Meloska Duels"
 TText.TextColor3 = Color3.fromRGB(180, 130, 255)
 TText.Font = Enum.Font.GothamBold
 TText.TextSize = 13
@@ -856,7 +856,7 @@ for _, data in pairs(buttonData) do
     lbl.TextXAlignment = Enum.TextXAlignment.Left
 
     local gear = Instance.new("TextLabel", b)
-    gear.Text = "âš™"
+    gear.Text = "•"
     gear.Position = UDim2.new(1, -20, 0, 0)
     gear.Size = UDim2.new(0, 20, 1, 0)
     gear.BackgroundTransparency = 1
@@ -1282,7 +1282,7 @@ tauntButtons["TAUNT"].MouseButton1Click:Connect(function()
                 local success = pcall(function()
                     local generalChannel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")
                     if generalChannel then
-                        generalChannel:SendAsync("/nines hub")
+                        generalChannel:SendAsync("/MeloskaOP")
                     end
                 end)
                 
@@ -1294,7 +1294,7 @@ tauntButtons["TAUNT"].MouseButton1Click:Connect(function()
                         if SayMessageRequest then
                             SayMessageRequest = SayMessageRequest:FindFirstChild("SayMessageRequest")
                             if SayMessageRequest then
-                                SayMessageRequest:FireServer("/nines hub", "All")
+                                SayMessageRequest:FireServer("/MeloskaOP", "All")
                             end
                         end
                     end)
